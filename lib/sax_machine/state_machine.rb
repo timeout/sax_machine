@@ -12,16 +12,17 @@ module SaxMachine
       @stack = SaxMachine::Stack.new
       @stack.push(@state)
       @text = false
+      @product = nil
     end
 
-    attr_reader :state, :stack, :transitions
+    attr_accessor :state
+    attr_reader :stack, :transitions, :product
 
     def state_name
       self.state.name
     end
 
     def on_start_element(name)
-      p "#{__method__}(#{name}, #{self.state})"
       transition = self.transitions.push_transition(name, self.state) ||
         self.transitions.text_transition(name, self.state)
       if transition and transition.event_type == :PushEvent
@@ -34,12 +35,20 @@ module SaxMachine
     end
 
     def on_end_element(name)
-      @stack.pop
+      @product = @stack.peek if @stack.size == 2
+
+      if @stack.size > 2
+        old_state = @state
+        @stack.pop
+        @state = self.stack.peek
+        method = "#{old_state.name}=".to_sym
+        @state.send method, old_state if @state.respond_to? method
+      else
+        @stack.pop
+      end
     end
 
     private
-
-    attr_writer :state
 
     def toggle_text!
       @text ^= true
