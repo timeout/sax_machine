@@ -11,8 +11,9 @@ module SaxMachine
     end
 
     def pop
-      raise EmptyStack.new('Illegal pop operation on empty stack') if @data.empty?
-      @data.pop
+      result = @data.pop
+      raise EmptyStack.new("Error: #{self.class.name} underflow. Bad transition?") if @data.empty?
+      result
     end
 
     def peek
