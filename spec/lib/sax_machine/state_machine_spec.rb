@@ -10,12 +10,23 @@ RSpec.describe SaxMachine::StateMachine do
         t << SaxMachine::Transition
           .new(SaxMachine::PushEvent.new(:article))
       end
-      expect(machine.state).to eq(:nil)
+      expect(machine.state_name).to eq(:nil)
+    end
+  end
+
+  describe '#state_name' do
+    it 'delegates to State#name' do 
+      transition = SaxMachine::Transition
+        .new(SaxMachine::PushEvent.new(:article))
+      machine = SaxMachine::StateMachine.new do |t|
+        t << transition
+      end
+      expect(machine.state_name).to eq(transition.state_name)
     end
   end
 
   describe '#on_state_element' do
-    it 'pushes an article onto the stack', broken: true do
+    it 'pushes an article onto the stack' do
       machine = SaxMachine::StateMachine.new do |t|
         t << SaxMachine::Transition
           .new(SaxMachine::PushEvent.new(:article))
