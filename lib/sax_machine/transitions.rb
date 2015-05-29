@@ -18,7 +18,7 @@ module SaxMachine
       result = transition(:PushEvent, event, state)
       # TODO
       raise "Evil madness: more than one result: #{result}" if result.size > 1
-      raise "Evil madness: no result: #{result}" if result.size == 0
+      # raise "Evil madness: no result: #{result}" if result.size == 0
       result.first
     end
 
@@ -27,7 +27,9 @@ module SaxMachine
     end
 
     def text_transition(event, state)
-      self.transition(:TextEvent, event, state)
+      result = transition(:TextEvent, event, state)
+      raise "Evil madness: more than one result: #{result}" if result.size > 1
+      result.first
     end
 
     def size
@@ -42,12 +44,12 @@ module SaxMachine
     private
 
     def transition(event_type, event, state)
-      @transitions.keep_if do |trans|
+      @transitions.select do |trans|
         # Debug
-        # puts "#{event} (#{event.class.name})"
-        # puts "#{trans.event.event} (#{trans.event.event.class.name})"
-        puts "state: #{state} (#{state.class.name})"
-        puts "trans.state: #{trans.state_name} (#{trans.state_name.class.name})"
+        # puts "#{event} (#{event.class.name}) == #{trans.event.event} (#{trans.event.event.class.name})"
+        # puts "state: #{state.name} (#{state.name.class}) == #{trans.state_name} (#{trans.state_name.class.name})"
+        # puts "event_type: #{event_type} (#{event_type.class}) == #{trans.event_type} (#{trans.event_type.class.name})"
+
 
         trans if trans.event.event == event and 
           trans.state_name == state.name and 
