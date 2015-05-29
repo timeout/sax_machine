@@ -3,7 +3,13 @@ module SaxMachine
   class Error < StandardError
   end
 
-  class BadTransitionAction < Error
+  class TransitionError < Error
+  end
+
+  class BadTransitionAction < TransitionError
+  end
+
+  class NilStateName < TransitionError
   end
 
   class IllegalEvent < Error
