@@ -11,6 +11,7 @@ module SaxMachine
       @transitions = SaxMachine::Transitions.new(&block)
       @stack = SaxMachine::Stack.new
       @stack.push(@state)
+      @text = false
     end
 
     attr_reader :state, :stack, :transitions
@@ -21,10 +22,14 @@ module SaxMachine
 
     def on_start_element(name)
       p "#{__method__}(#{name}, #{self.state})"
-      transition = self.transitions.push_transition(name, self.state)
-      if transition.event_type == :PushEvent
+      transition = self.transitions.push_transition(name, self.state) ||
+        self.transitions.text_transition(name, self.state)
+      if transition and transition.event_type == :PushEvent
         @state = SaxMachine::StateFactory.create(name)
         @stack.push(@state)
+      end
+      if transition and transition.event_type == :TextEvent
+        toggle_text!
       end
     end
 
@@ -35,6 +40,14 @@ module SaxMachine
     private
 
     attr_writer :state
+
+    def toggle_text!
+      @text ^= true
+    end
+
+    def has_text?
+      @text
+    end
 
   end
 end

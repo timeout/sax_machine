@@ -35,7 +35,7 @@ RSpec.describe SaxMachine::StateMachine do
       expect(machine.stack.peek.name).to eq(:article)
     end
 
-    it 'pops an article off the stack', broken: true do
+    it 'pops an article off the stack' do
       machine = SaxMachine::StateMachine.new do |t|
         t << SaxMachine::Transition
           .new(SaxMachine::PushEvent.new(:article))
@@ -44,10 +44,10 @@ RSpec.describe SaxMachine::StateMachine do
       end
       machine.on_start_element(:article)
       machine.on_end_element(:article)
-      expect(machine.stack.peek).to be_nil
+      expect(machine.stack.peek.name).to eq(:nil)
     end
 
-    it 'doesn\'t change the stack state', broken: true do
+    it 'doesn\'t change the stack state' do
       machine = SaxMachine::StateMachine.new do |t|
         t << SaxMachine::Transition
           .new(SaxMachine::PushEvent.new(:article))
@@ -58,5 +58,6 @@ RSpec.describe SaxMachine::StateMachine do
       machine.on_start_element(:title)
       expect(machine.stack.peek.name).to eq(:article)
     end
+
   end
 end
