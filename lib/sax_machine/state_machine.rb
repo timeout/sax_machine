@@ -5,7 +5,7 @@ require 'sax_machine/state_factory'
 module SaxMachine
   class StateMachine
 
-    def initialize(start_state = nil, &block)
+    def initialize(start_state = :nil, &block)
       @state = start_state
       @transitions = SaxMachine::Transitions.new(&block)
       @stack = SaxMachine::Stack.new
