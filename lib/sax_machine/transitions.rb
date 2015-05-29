@@ -47,10 +47,10 @@ module SaxMachine
         # puts "#{event} (#{event.class.name})"
         # puts "#{trans.event.event} (#{trans.event.event.class.name})"
         puts "state: #{state} (#{state.class.name})"
-        puts "trans.state: #{trans.state} (#{trans.state.class.name})"
+        puts "trans.state: #{trans.state_name} (#{trans.state_name.class.name})"
 
         trans if trans.event.event == event and 
-          trans.state == state and 
+          trans.state_name == state.name and 
           trans.event_type == event_type
       end
     end
