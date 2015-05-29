@@ -6,7 +6,10 @@ module SaxMachine
 
     def initialize(name)
       @name = name
+      @front = nil
     end
+
+    attr_accessor :front
 
   end
 end
