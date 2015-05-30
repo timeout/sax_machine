@@ -6,6 +6,10 @@ module SaxMachine
 
     def initialize(name)
       @name = name
+      @title = nil
     end
+
+    attr_accessor :title
+
   end
 end

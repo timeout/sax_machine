@@ -37,6 +37,12 @@ module SaxMachine
     def on_end_element(name)
       @product = @stack.peek if @stack.size == 2
 
+      # is there are a TextEvent for the name? toggle_text!
+      if self.transitions.text_transition(name, self.state)
+        toggle_text! 
+        return
+      end
+
       if @stack.size > 2
         old_state = @state
         @stack.pop
@@ -46,6 +52,11 @@ module SaxMachine
       else
         @stack.pop
       end
+    end
+
+    def on_text(value, event=:title)
+      method = "#{event}="
+      @state.send method, value if @state.respond_to? method
     end
 
     private

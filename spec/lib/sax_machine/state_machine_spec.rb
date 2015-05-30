@@ -70,6 +70,9 @@ RSpec.describe SaxMachine::StateMachine do
   end
 
   describe '#product' do
+    let (:title) {'Sex Pheromones and Reproductive Isolation'\
+                  'in Five Mirid Species'}
+
     it 'has no product, if there no transitions' do
       machine = SaxMachine::StateMachine.new do |t|
         t << SaxMachine::Transition
@@ -109,6 +112,32 @@ RSpec.describe SaxMachine::StateMachine do
       expect(product.name).to eq(:article)
       front = product.front
       expect(front.name).to eq(:front)
+    end
+
+    it 'returns an article with a front object and a title accessor' do
+      machine = SaxMachine::StateMachine.new do |t| 
+        t << SaxMachine::Transition
+          .new(SaxMachine::PushEvent.new(:article))
+        t << SaxMachine::Transition
+          .new(SaxMachine::TextEvent.new(:title), :article)
+        t << SaxMachine::Transition
+          .new(SaxMachine::PushEvent.new(:front), :article)
+        t << SaxMachine::Transition
+          .new(SaxMachine::PopEvent.new(:front), :article)
+        t << SaxMachine::Transition
+          .new(SaxMachine::PopEvent.new(:article))
+      end
+      machine.on_start_element(:article)
+      machine.on_start_element(:title)
+      machine.on_text(title)
+      machine.on_end_element(:title)
+      machine.on_start_element(:front)
+      machine.on_end_element(:front)
+      machine.on_end_element(:article)
+      product = machine.product
+      puts product.name
+      expect(product.front.name).to eq(:front)
+      expect(product.title).to eq(title)
     end
   end
 end
